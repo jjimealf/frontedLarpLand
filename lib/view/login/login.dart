@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:larpland/model/login.dart';
+import 'package:larpland/service/login.dart';
 import 'package:larpland/view/register/register.dart';
-import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +13,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // server response
+  late Future<Login> futureLogin;
+
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -34,15 +36,14 @@ class _LoginScreenState extends State<LoginScreen> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       try {
-        final response = await http.post(
-          Uri.parse('http://10.0.2.2:8000/api/login'),
-          body: jsonEncode({
-            'email': emailController.text,
-            'password': passwordController.text,
-          }),
-        );
-        if (response.statusCode == 200) {
-          Navigator.pushReplacement(
+        futureLogin = login(emailController.text, passwordController.text);
+        if ((await futureLogin).rol == 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+          );
+        } else if ((await futureLogin).rol == 1) {
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const RegisterScreen()),
           );
@@ -51,8 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Login Failed'),
-              content: const Text('Invalid email or password'),
+              title: const Text('Login Fallido'),
+              content: const Text(
+                  'Por favor, verifique su correo electrónico y contraseña'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
@@ -63,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } catch (e) {
-        // Error occurred while making API request
+        // Show error message
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -159,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Goto RegisterScreen Page
   void _navigateToRegisterScreen() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const RegisterScreen()),
     );
