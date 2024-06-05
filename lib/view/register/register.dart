@@ -46,8 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Registration Successful'),
-            content: const Text('You can now login'),
+            title: const Text('Registro Exitoso'),
+            content: const Text('Ahora puede iniciar sesión'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pushReplacement(
@@ -59,11 +59,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         );
-      } else if (response.statusCode == 400) {
+      } else {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Registration Failed'),
+            title: const Text('Registro Fallido'),
             content: Text(jsonDecode(response.body)['error'].toString()),
             actions: [
               TextButton(
