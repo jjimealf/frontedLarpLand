@@ -87,6 +87,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: const Text('Registro'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          )
         ),
         body: Container(
           padding: const EdgeInsets.all(16.0),
