@@ -1,4 +1,8 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -26,9 +30,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return false;
   }
 
-  void _validateAndSubmit() {
+  void _validateAndSubmit() async {
     if (_validateAndSave()) {
-      // TODO: Perform sign-up logic here
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/users'),
+        body: {
+          'name': nameController.text,
+          'email': emailController.text,
+          'password': passwordController.text,
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Registration successful
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Registration Successful'),
+            content: const Text('You can now login'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen())),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else if (response.statusCode == 400) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Registration Failed'),
+            content: Text(jsonDecode(response.body)['error'].toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 

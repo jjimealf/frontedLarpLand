@@ -1,5 +1,10 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:larpland/view/register/register.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -26,9 +31,53 @@ class _LoginScreenState extends State<LoginScreen> {
     return false;
   }
 
-  void _validateAndSubmit() {
+  void _validateAndSubmit() async {
     if (_validateAndSave()) {
-      // TODO: Perform sign-in logic here
+      try {
+        final response = await http.post(
+          Uri.parse('http://10.0.2.2:8000/api/login'),
+          body: jsonEncode({
+            'email': emailController.text,
+            'password': passwordController.text,
+          }),
+        );
+        if (response.statusCode == 200) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+          );
+        } else {
+          // Login failed, show error message
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: const Text('Invalid email or password'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      } catch (e) {
+        // Error occurred while making API request
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
