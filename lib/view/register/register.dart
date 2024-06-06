@@ -1,8 +1,9 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+import 'package:larpland/model/user.dart';
+import 'package:larpland/service/register.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -12,6 +13,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  // server response
+  late Future<User> futureRegister;
+
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -32,16 +36,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/users'),
-        body: {
-          'name': nameController.text,
-          'email': emailController.text,
-          'password': passwordController.text,
-        },
-      );
-
-      if (response.statusCode == 201) {
+      try {
+      futureRegister = register(
+          nameController.text, emailController.text, passwordController.text);
         // Registration successful
         showDialog(
           context: context,
@@ -59,12 +56,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         );
-      } else {
+      } catch (e){
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Registro Fallido'),
-            content: Text(jsonDecode(response.body)['error'].toString()),
+            title: const Text('error'),
+            content: Text(e.toString()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
