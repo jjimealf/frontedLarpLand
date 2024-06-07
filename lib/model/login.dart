@@ -1,25 +1,25 @@
 class Login {
-  final int status;
-  final String message;
+  final String status;
   final int rol;
+  final String message;
 
   const Login({
     required this.status,
-    required this.message,
     required this.rol,
+    required this.message,
   });
 
   factory Login.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
-        'status': int status,
-        'message': String message,
+        'status': String status,
         'rol': int rol,
+        'message': String message,
       } =>
         Login(
           status: status,
-          message: message,
           rol: rol,
+          message: message,
         ),
       _ => throw Exception('Login invalido'),
     };

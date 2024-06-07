@@ -30,7 +30,7 @@ class User {
           password: password,
           rol: rol,
         ),
-      _ => throw Exception('Registro invalido'),
+      _ => throw const FormatException('Falló al cargar el usuario'),
     };
   }
 }
