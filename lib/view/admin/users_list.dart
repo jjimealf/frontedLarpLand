@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:larpland/model/user.dart';
 
 class UsersList extends StatefulWidget {
@@ -36,8 +35,8 @@ class _UsersListState extends State<UsersList> {
             },
           );
         } else if (snapshot.hasError) {
-          return const Center(
-            child: Text('Error al cargar la lista de usuarios'),
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
           );
         }
         return const Center(
@@ -48,9 +47,9 @@ class _UsersListState extends State<UsersList> {
   }
 
   Future<List<User>> fetchUserList() async {
-    final response = await Dio().get('https://10.0.2.2:8000/api/users');
+    final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/users'));
     if (response.statusCode == 200) {
-      return List<User>.from(jsonDecode(response.data).map((user) => User.fromJson(user)));
+      return List<User>.from(jsonDecode(response.body).map((user) => User.fromJson(user)));
     } else {
       throw Exception('Failed to fetch user list');
     }

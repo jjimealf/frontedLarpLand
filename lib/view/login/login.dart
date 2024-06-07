@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:larpland/model/login.dart';
 import 'package:larpland/service/login.dart';
 import 'package:larpland/view/admin/adminhome.dart';
+import 'package:larpland/view/catalog/catalog.dart';
 import 'package:larpland/view/register/register.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if ((await futureLogin).rol == 0) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const RegisterScreen()),
+            MaterialPageRoute(builder: (context) => const HomePage()),
           );
         } else if ((await futureLogin).rol == 1) {
           Navigator.push(

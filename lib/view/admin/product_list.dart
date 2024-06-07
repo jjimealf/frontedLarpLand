@@ -12,40 +12,50 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List<Product> productList = [];
+  late Future<List<Product>> productList;
 
   @override
   void initState() {
     super.initState();
-    fetchProductList();
-  }
-
-  Future<void> fetchProductList() async {
-    final response = await http.get(Uri.parse('https://api.example.com/products'));
-    if (response.statusCode == 200) {
-      setState(() {
-        productList = List<Product>.from(jsonDecode(response.body).map((product) => Product.fromJson(product)));
-      });
-    } else {
-      throw Exception('Failed to fetch product list');
-    }
+    productList = fetchProductList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Product List'),
-      ),
-      body: ListView.builder(
-        itemCount: productList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(productList[index].nombre),
-            subtitle: Text(productList[index].cantidad.toString()),
-            );
-        },
-      ),
+    return FutureBuilder<List<Product>>(
+      future: productList,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(snapshot.data![index].nombre),
+                subtitle: Text(snapshot.data![index].descripcion),
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
+  }
+
+  
+
+  Future<List<Product>> fetchProductList() async {
+    final response =
+        await http.get(Uri.parse('http://127.0.0.1:8000/api/products'));
+    if (response.statusCode == 200) {
+        return List<Product>.from(jsonDecode(response.body).map((product) => Product.fromJson(product)));
+    } else {
+      throw Exception('Failed to fetch product list');
+    }
   }
 }

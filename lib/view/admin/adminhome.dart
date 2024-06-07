@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:larpland/view/admin/product_list.dart';
 import 'package:larpland/view/admin/users_list.dart';
 
 class AdminHome extends StatefulWidget {
@@ -9,16 +10,20 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
-
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final screen = [const UsersList(), const ProductList()];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Home'),
       ),
-      body: const UsersList(),
+      body: IndexedStack(
+        index: selectedIndex,
+        children: screen,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (value) => setState(() => selectedIndex = value),
@@ -39,4 +44,4 @@ class _AdminHomeState extends State<AdminHome> {
       ),
     );
   }
-} 
+}
