@@ -47,7 +47,7 @@ class _UsersListState extends State<UsersList> {
   }
 
   Future<List<User>> fetchUserList() async {
-    final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/users'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/users'));
     if (response.statusCode == 200) {
       return List<User>.from(jsonDecode(response.body).map((user) => User.fromJson(user)));
     } else {
