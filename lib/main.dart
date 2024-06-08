@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:larpland/view/admin/product_register.dart';
 import 'package:larpland/view/login/login.dart';
 
 void main() {
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: AddProductScreen(),
+      home: LoginScreen(),
     );
   }
 }

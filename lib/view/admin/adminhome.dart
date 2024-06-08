@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:larpland/view/admin/event_list.dart';
 import 'package:larpland/view/admin/product_list.dart';
 import 'package:larpland/view/admin/users_list.dart';
 
@@ -14,7 +15,7 @@ class _AdminHomeState extends State<AdminHome> {
 
   @override
   Widget build(BuildContext context) {
-    final screen = [const UsersList(), const ProductList()];
+    final screen = [const UsersList(), const ProductList(), const EventScreen()];
 
     return Scaffold(
       appBar: AppBar(
@@ -29,16 +30,16 @@ class _AdminHomeState extends State<AdminHome> {
         onTap: (value) => setState(() => selectedIndex = value),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.verified_user),
+            label: 'Users',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.inventory),
+            label: 'Inventory',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(Icons.event),
+            label: 'Events',
           ),
         ],
       ),
