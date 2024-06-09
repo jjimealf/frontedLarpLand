@@ -19,7 +19,12 @@ class _AdminHomeState extends State<AdminHome> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Admin Home'),
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () => Navigator.pop(context),
+        )
       ),
       body: IndexedStack(
         index: selectedIndex,
