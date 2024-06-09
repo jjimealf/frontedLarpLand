@@ -2,26 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:larpland/model/product.dart';
-import 'package:larpland/service/product.dart';
+import 'package:larpland/model/roleplay_event.dart';
+import 'package:larpland/service/roleplay_event.dart';
 
-class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+class AddEventScreen extends StatefulWidget {
+  const AddEventScreen({super.key});
 
   @override
-  State<AddProductScreen> createState() => _AddProductScreenState();
+  State<AddEventScreen> createState() => _AddEventScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
-  late Future<Product> futureProduct;
+class _AddEventScreenState extends State<AddEventScreen> {
+
+  late Future<RoleplayEvent> futureEvent;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
-  TextEditingController stockController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
+  TextEditingController fechaInicioController = TextEditingController();
+  TextEditingController fechaFinController = TextEditingController();
   File? image;
 
   bool _validateAndSave() {
@@ -36,25 +36,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       try {
-        futureProduct = addProduct(
+        futureEvent = addEvent(
           nameController.text,
           descriptionController.text,
-          priceController.text,
-          stockController.text as int,
-          categoryController.text,
+          fechaInicioController.text,
+          fechaFinController.text,
           image!,
         );
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Producto Agregado'),
-            content: const Text('El producto ha sido agregado exitosamente'),
+            title: const Text('Evento Agregado'),
+            content: const Text('El evento ha sido agregado exitosamente'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AddProductScreen(),
+                    builder: (context) => const AddEventScreen(),
                   ),
                 ),
                 child: const Text('OK'),
@@ -67,7 +66,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Error'),
-            content: const Text('Ha ocurrido un error al agregar el producto'),
+            content: Text('Error: $e'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -84,20 +83,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar Producto'),
+        title: const Text('Agregar Evento'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: [
               TextFormField(
                 controller: nameController,
                 decoration: const InputDecoration(labelText: 'Nombre'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Por favor ingrese el nombre del producto';
+                    return 'Por favor ingrese un nombre';
                   }
                   return null;
                 },
@@ -107,49 +106,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 decoration: const InputDecoration(labelText: 'Descripción'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Por favor ingrese la descripción del producto';
+                    return 'Por favor ingrese una descripción';
                   }
                   return null;
                 },
               ),
               TextFormField(
-                controller: priceController,
-                decoration: const InputDecoration(labelText: 'Precio'),
+                controller: fechaInicioController,
+                decoration: const InputDecoration(labelText: 'Fecha de Inicio'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Por favor ingrese el precio del producto';
+                    return 'Por favor ingrese una fecha de inicio';
                   }
                   return null;
                 },
               ),
               TextFormField(
-                controller: stockController,
-                decoration: const InputDecoration(labelText: 'Stock'),
+                controller: fechaFinController,
+                decoration: const InputDecoration(labelText: 'Fecha de Fin'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Por favor ingrese el stock del producto';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: categoryController,
-                decoration: const InputDecoration(labelText: 'Categoría'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor ingrese la categoría del producto';
+                    return 'Por favor ingrese una fecha de fin';
                   }
                   return null;
                 },
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final picker = ImagePicker();
-                  final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
-                  if (pickedFile != null) {
+                  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+                  if (image != null) {
                     setState(() {
-                      image = File(pickedFile.path);
+                      this.image = File(image.path);
                     });
                   }
                 },
@@ -158,7 +146,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               if (image != null) Image.file(image!),
               ElevatedButton(
                 onPressed: _validateAndSubmit,
-                child: const Text('Agregar Producto'),
+                child: const Text('Agregar Evento'),
               ),
             ],
           ),
@@ -166,4 +154,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ),
     );
   }
-}
+} 
+     
+  

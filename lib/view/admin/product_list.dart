@@ -25,30 +25,28 @@ class _ProductListState extends State<ProductList> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Expanded(
-          child: FutureBuilder<List<Product>>(
-            future: productList,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(snapshot.data![index].nombre),
-                      subtitle: Text(snapshot.data![index].descripcion),
-                    );
-                  },
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
+        FutureBuilder<List<Product>>(
+          future: productList,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data![index].nombre),
+                    subtitle: Text(snapshot.data![index].descripcion),
+                  );
+                },
               );
-            },
-          ),
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ),
         Positioned(
           bottom: 16,
@@ -57,6 +55,7 @@ class _ProductListState extends State<ProductList> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductScreen()));
             },
+            heroTag: 'addProduct',
             tooltip: 'Nuevo Producto',
             child: const Icon(Icons.add),
           ),

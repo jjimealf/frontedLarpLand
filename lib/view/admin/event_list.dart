@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:larpland/model/roleplay_event.dart';
 import 'package:larpland/service/roleplay_event.dart';
+import 'package:larpland/view/admin/event_register.dart';
 
 class EventScreen extends StatefulWidget {
   const EventScreen({super.key});
@@ -23,29 +24,45 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<RoleplayEvent>>(
-      future: eventList,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(snapshot.data![index].name),
-                subtitle: Text(snapshot.data![index].fechaInicio.toString()),
-                trailing: Text(snapshot.data![index].fechaFin.toString()),
+    return Stack(
+      children: [
+        FutureBuilder<List<RoleplayEvent>>(
+          future: eventList,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data![index].name),
+                    subtitle: Text(snapshot.data![index].fechaInicio.toString()),
+                    trailing: Text(snapshot.data![index].fechaFin.toString()),
+                  );
+                },
               );
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+        Positioned(
+          bottom: 16,
+          right: 16,
+          child: FloatingActionButton(
+            onPressed: () =>
+                Navigator.push(context, 
+                MaterialPageRoute(builder: (context) => const AddEventScreen())),
+            tooltip: 'Agregar evento',
+            heroTag: 'add_event',
+            child: const Icon(Icons.add),
+          ),
+        )
+      ],
     );
   }
 }
