@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:larpland/model/product.dart';
+import 'package:larpland/service/product.dart';
 import 'package:larpland/view/admin/product_register.dart';
 
 class ProductList extends StatefulWidget {
@@ -34,7 +33,16 @@ class _ProductListState extends State<ProductList> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(snapshot.data![index].nombre),
-                    subtitle: Text(snapshot.data![index].descripcion),
+                    subtitle: Text(
+                          snapshot.data![index].cantidad.toString(),
+                          style: TextStyle(color: snapshot.data![index].cantidad > 10
+                                ? Colors.green
+                                : snapshot.data![index].cantidad >= 3
+                                    ? Colors.yellow
+                                    : Colors.red, )),
+                    trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(product: snapshot.data![index])));
+                    }),
                   );
                 },
               );
@@ -62,17 +70,5 @@ class _ProductListState extends State<ProductList> {
         )
       ],
     );
-  }
-
-  
-
-  Future<List<Product>> fetchProductList() async {
-    final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/api/products'));
-    if (response.statusCode == 200) {
-        return List<Product>.from(jsonDecode(response.body).map((product) => Product.fromJson(product)));
-    } else {
-      throw Exception('Failed to fetch product list');
-    }
   }
 }

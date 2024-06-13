@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 Future<User> register(String name, String email, String password) async {
   final response = await http.post(
-    Uri.parse("http://10.0.2.2:8000/api/users"),
+    Uri.parse("https://mongoose-hip-lark.ngrok-free.app/api/users"),
     body: {
       'name': name,
       'email': email,

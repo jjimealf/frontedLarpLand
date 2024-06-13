@@ -1,7 +1,6 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:larpland/model/roleplay_event.dart';
 import 'package:larpland/service/roleplay_event.dart';
 
@@ -22,7 +21,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController fechaInicioController = TextEditingController();
   TextEditingController fechaFinController = TextEditingController();
-  File? image;
 
   bool _validateAndSave() {
     final form = _formKey.currentState;
@@ -41,7 +39,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
           descriptionController.text,
           fechaInicioController.text,
           fechaFinController.text,
-          image!,
         );
         showDialog(
           context: context,
@@ -50,12 +47,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
             content: const Text('El evento ha sido agregado exitosamente'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddEventScreen(),
-                  ),
-                ),
+                onPressed: () => Navigator.pop(
+                  context),
                 child: const Text('OK'),
               ),
             ],
@@ -131,19 +124,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-
-                  if (image != null) {
-                    setState(() {
-                      this.image = File(image.path);
-                    });
-                  }
-                },
-                child: const Text('Seleccionar Imagen'),
-              ),
-              if (image != null) Image.file(image!),
               ElevatedButton(
                 onPressed: _validateAndSubmit,
                 child: const Text('Agregar Evento'),

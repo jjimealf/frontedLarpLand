@@ -3,17 +3,17 @@ class RoleplayEvent {
   final int id;
   final String name;
   final String description;
-  final String image;
   final String fechaInicio;
   final String fechaFin;
+  bool isRegistered;
 
   RoleplayEvent({
     required this.id,
     required this.name,
     required this.description,
-    required this.image,
     required this.fechaInicio,
     required this.fechaFin,
+    this.isRegistered = false,
   });
 
   factory RoleplayEvent.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,6 @@ class RoleplayEvent {
             'id': int id,
             'nombre': String name,
             'descripcion': String description,
-            'image': String image,
             'fecha_inicio': String fechaInicio,
             'fecha_fin': String fechaFin,
           } =>
@@ -30,7 +29,6 @@ class RoleplayEvent {
               id: id,
               name: name,
               description: description,
-              image: image,
               fechaInicio: fechaInicio,
               fechaFin: fechaFin,
             ),

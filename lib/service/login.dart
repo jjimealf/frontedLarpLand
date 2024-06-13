@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 Future<Login> login(String email, String password) async {
   final response = await http.post(
-    Uri.parse('http://10.0.2.2:8000/api/login'),
+    Uri.parse('https://mongoose-hip-lark.ngrok-free.app/api/login'),
     body: jsonEncode({
       'email': email,
       'password': password,

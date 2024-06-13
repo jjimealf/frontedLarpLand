@@ -6,7 +6,10 @@ import 'package:larpland/model/product.dart';
 import 'package:larpland/service/product.dart';
 
 class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+
+  final Product? product;
+
+  const AddProductScreen({super.key, this.product});
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -24,6 +27,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
   TextEditingController categoryController = TextEditingController();
   File? image;
 
+@override
+  void initState() {
+    super.initState();
+    if (widget.product != null) {
+      nameController.text = widget.product!.nombre;
+      descriptionController.text = widget.product!.descripcion;
+      priceController.text = widget.product!.precio;
+      stockController.text = widget.product!.cantidad.toString();
+      categoryController.text = widget.product!.categoria;
+      // Assuming you have a way to convert the image URL to a File, if needed
+      image = File(widget.product!.imagen);
+    }
+  }
+
   bool _validateAndSave() {
     final form = _formKey.currentState;
     if (form!.validate()) {
@@ -36,11 +53,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void _validateAndSubmit() async {
     if (_validateAndSave()) {
       try {
+        if (widget.product == null) {
         futureProduct = addProduct(
           nameController.text,
           descriptionController.text,
           priceController.text,
-          stockController.text as int,
+          int.parse(stockController.text),
           categoryController.text,
           image!,
         );
@@ -62,12 +80,36 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ],
           ),
         );
+        } else {
+           updateProduct(
+            widget.product!.id,
+            name: nameController.text,
+            descripcion: descriptionController.text,
+            precio: priceController.text,
+            stock: stockController.text as int,
+            categoria: categoryController.text,
+            imagen: image,
+          );
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Producto Actualizado'),
+              content: const Text('El producto ha sido actualizado exitosamente'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
       } catch (e) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Error'),
-            content: const Text('Ha ocurrido un error al agregar el producto'),
+            content: Text(e.toString()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -84,7 +126,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar Producto'),
+        title: Text(widget.product == null
+            ? 'Agregar Producto'
+            : 'Actualizar Producto'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -158,7 +202,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
               if (image != null) Image.file(image!),
               ElevatedButton(
                 onPressed: _validateAndSubmit,
-                child: const Text('Agregar Producto'),
+                child: Text(widget.product == null
+                    ? 'Agregar Producto'
+                    : 'Actualizar Producto'),
               ),
             ],
           ),

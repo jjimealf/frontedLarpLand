@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:larpland/model/user.dart';
+import 'package:larpland/service/user.dart';
 
 class UsersList extends StatefulWidget {
   const UsersList({super.key});
@@ -44,14 +43,5 @@ class _UsersListState extends State<UsersList> {
         );
       },
     );
-  }
-
-  Future<List<User>> fetchUserList() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/users'));
-    if (response.statusCode == 200) {
-      return List<User>.from(jsonDecode(response.body).map((user) => User.fromJson(user)));
-    } else {
-      throw Exception('Failed to fetch user list');
-    }
   }
 }
